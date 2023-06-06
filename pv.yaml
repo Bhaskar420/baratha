@@ -1,30 +1,140 @@
  apiVersion: apps/v1
- kind: StatefulSet
+ kind: Deployment
  metadata:
-   name: mongodb
-spec:
-  replicas: 3
-  selector: 
-    matchLabels:
-      app: mongo
-  serviceName: "mongo"
-  template:
-    metadata:
-      labels:
-        app: mongo
-    spec:
-      containers:
-        - name: mongo-dba
-          image: mongo:latest
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  key: username
-                  name: mongodb-config
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: mongodb-secret
-          commnad:
+    name: nginx
+ spec:
+   selector:
+     matchLabels:
+       app:
+   replicas: 4
+   template:
+     metadata:
+       labels:
+         app: nginx
+      spec:
+        volumes:
+          - name: nginx-volue
+            hostPath:
+              path: /data/db
+
+         cotainers:
+           - name: nginx 
+             image: nginx
+             volueMounts:
+               - name: nginx-volue
+                 mountPath: /var/www/html
+
+
+               
+      spec:
+        containers:
+           - name: nginx-volue
+             image: nginx
+             voluemount:
+               - name: nginx-volue
+                 mountPath: /var/www/lib
+
+
+      PersitentTemplateVolume:
+        metadata:
+          - name: nginx-volue
+         spec:
+           capacity: 
+             storage: 20G
+            volumeMode: Filesystem
+            accessModes:
+              - ReadWriteOnce
+            hostPath:
+              path: /data/db
+
+
+   apiVersion: v1
+   kind: PersitentVolume
+   metadata:
+     - name: my-nginx
+   spec:
+     capacity:
+       storage: 20G
+     volumeMode: Filesystem
+     accessModes:
+       - ReadWriteOnce
+     hostPath:
+       path: /data/var
+
+   apiVersion: v1
+   kind: PersistentVolumeClaim
+   metadata:
+     - name: my-nginx
+   spec:
+     storageClassName: manauly
+     accessModes:
+       - ReadwriteOnce
+     resources:
+       requests:
+         storage: 3G 
+
+
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    - name: nginx
+   spec:
+     selector:
+       matchLabels:
+         app: nginx
+     replicas: 3
+     template:
+       matadata:
+         labels:
+           app: nginx
+       spec:
+         volumes:
+           - name: my-nginx
+             PersistentVolumeClaim:
+               claimPath: /var/lib/data
+         containers:
+           - name: my-nginx
+             image: nginx
+             volumeMount:
+               - name: my-nginx
+                 mountPath: /var/lib/data
+           - name: my-tomcat
+             image: tomcat
+             volumeMOunt:
+               - name: my-nginx
+                 mountPath: /var/lib/data
+
+
+
+  apiVerson: v1
+  kind: ConfigMap
+  metadata:
+    - name: my-nginx
+  data:
+    user: "amdin"
+    password: bhaskarrao
+
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    - name: my-nginx
+  data:
+    password: urytyryereye
+
+  apiVersion: v1
+  kind: Deployment
+  metadata:
+    - name: my-nginx
+  spec:
+    containers:
+      - name: my-nginx
+        image: nginx
+        evn:
+          - name: user_indtb_user
+            volueFrom:
+              ConfigMap:
+    volumes:
+      - name: my-nginx
+      hostPath:
+        path: /data/db
+    

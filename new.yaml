@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: mypvc
+spec:
+  storageClassName: manual
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resouces:
+    requests:
+      storage: 2Gi
+  hostpath:
+    - name: mypvc
+      hostPath: /data/db
+
+apiVersion: v1
+kind: PersistenVolumeClaim
+metadata:
+  name: mypv
+spec:
+  storageClassname: manual
+  accessModes:
+    resources:
+      requests:
+        storage: 3Gi
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploypvc
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      volumes:
+        - name: mypvc
+          PersistentVolumeClaim:
+            claimmypvc: mongdb/data
+
+      containers:
+        - name: mypvc
+          image: nginx
+          volumeMouts:
+            - name: myvolumes
+              mountPath: monogb/data
+
+           
