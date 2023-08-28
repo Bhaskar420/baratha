@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: nginx-volume
+spec:
+  capacity:
+    storage: 3Gi
+  volueMounts: Filesytem
+  accessModes:
+    - ReadOnlyOnce
+  hostPath:
+    name:
+    path: /var/data
+
+apiVersion: v1
+kind: PersistenVolumeClaim
+metadata:
+  name: nginx-pvc
+spec:
+  storageNameClass: manualy
+  accessModes:
+    - ReadOnlyOnce
+  resources:
+    requists:
+      storage: 4Gi
+  
+
+apiVersion: autoScaling/v2
+kind: Deployment
+metadata:
+  name: Utilization
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: Utilixation
+  template:
+    metadata:
+      labels:
+        app: utilization
+    spce:
+      containers:
+        - name: bhaskarthis
+          image: pavan/thises
+          ports:
+            - containerPort: 80
+        
+apiVersion: v1
+kind: Deployment
+metadata:
+  name:  

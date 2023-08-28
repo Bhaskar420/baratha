@@ -1,0 +1,529 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+    - name: nginx
+      ports:
+        - containerPort: 80
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: nginx-deployment
+  template:
+    metadata:
+      labels:
+        name: nginx-deployment
+    spec:
+      containers:
+        - name: nginx-deployment
+          images: nginx
+          ports:
+            - containerPort: 80
+
+
+
+kubectl create -f deploymnet.yaml
+kubectl rollout undo depployment deploymnetname
+kubectl scale deploymnet deploymentname --replicas=3
+kubectl rollout status deployment deploymentname 
+kubectl rollout histroy deployment deploymentname
+kubectl  creat deployment --image nginx
+kubectl  rollout histroy deployment bhaskar
+kubectl deployment create  bhaskar --image ngnx
+kubectl rollout undo deployment bhaskar --image nginx
+kubectl  get svc
+
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: deployment-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: nginx-deployment
+  template:
+    metadata:
+      labels:
+        name: nginx-deployment
+    spec:
+      containers:
+        - name: nginx-deployment
+          image: nginx
+          ports:
+            - containerPort: 80
+          env:
+            - name: username
+              key: username
+            - name: password
+              key: passwd
+          env:
+            - name: username
+              volueForm:
+                configMap:
+                  - 
+apiVersion: apps/v1
+kind: Replicas
+metadata:
+  name: nginx-repliacas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: nginx-replicas
+  template:
+    matadata:
+      name: nginx-replicas
+    spec:
+      containers:
+        - volumes:
+            - name: myvolume
+              path: /dat/v
+        - name: nginx-replicas
+          image: bhaskar420/newproject
+          ports:
+            - containerPort: 80
+          env:
+            - name: MYSqlUer
+              key: user
+            - name: password
+              key: password
+          voluemMount:
+            - name: myvolume
+              mountPath: /opt
+          env:
+            - name: username
+              Valueform:
+                confimap:
+                  - name: myuser
+                    key: useraname
+            - name: password
+              volueForm:
+                secret:
+                  - name: my-sceat
+                    key: password
+
+apiVersion: v1
+kind: Service
+metadata:
+   name: nginx-service
+spec:
+  type: NodePort
+  selector:
+    name: nginx-service
+  ports:
+    - port: 80
+      targetPort: 8080
+      NodePort: 3030
+      protocol: TCP
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-sericess
+spec:
+  type: ClusterIP
+  selector:
+    name: nginx-serivce
+  ports:
+    - port: 80
+      tragetPort: 8080
+      protocol: TCP
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalacer
+  selector:
+    name: nginx-service
+  ports:
+    - port: 80
+      targetPort: 8081
+      protocol: TCP
+
+
+
+apiVersion: apps/v1
+kind: Ingress
+metadata:
+  name: nginx-deployment
+spec:
+  rules: 
+    host: nginx-deployment
+    https:
+      - path: 
+          pathType: */ Pfiex
+          pathname: In
+          backService:
+            port:
+              numerb: 80
+    host: nignx-ur
+    https:
+      - paths:
+          path: /(.*)
+          pathTYpe: Prefix
+          backService:
+            port:
+              numner: 80
+
+apiVersion: apps/v1
+kind: HorizantalPOdScaing
+metadata:
+  name: nginx
+spec:
+  minreplicas: 1
+  maxreplicas: 5
+  matrics:
+    - resources:
+        name: cup
+      typeUlization: 50
+      type: Resouces
+  type: Utrlizatoin
+ScaleTargetRef:
+kind: nginx-deployment
+name: nginx-dpeloyment
+ 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-service
+immutable: true
+data:
+  user: root
+
+apiVersion: v1
+kind: Secrete
+metadata:
+  name: nginx-secrete
+type: opque
+data:
+  password: bhaskar
+
+
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: mongo
+spec:
+  replicas: 2
+  selector:
+    matchLabeles:
+      name: mongo
+  template:
+    metadata:
+      labels:
+        name: mongo
+    spec:
+      containers:
+      liveprobe:
+        exce:
+          commnad:
+          - mongo
+          - --eval
+          - db.admincommand
+        initialDealySeconds: 1
+        PeriodeSecondes: 5
+        timeout Secound: 4
+        seccuss Thersould: 0
+        failer thersould: 1
+
+    readprobe:
+      exec:
+        command:
+          - mongo
+          - --eval
+          - db.admincommand
+     initalDealySecound: 1
+     PeriodeSeconds: 5
+     timeoutSeconds: 2
+     Seccuss Thersolds: 2
+     failureThersolds: 10
+
+
+     apiVersion: apps/v1
+     kind: StatefulSet
+     metadata:
+       name: mongo
+     spec:
+       replicas: 2
+       selector:
+         matchLabels:
+           name: mongo
+       template:
+         metadata:
+           name: mongo
+         spec:
+           containers:
+             - name: mongo
+               image: mongo
+               ports:
+                 - containerPort: 80
+               env:
+                 - name: username
+                     volueForm:
+                       configMap:
+                         - name: configMap
+                         - key: usename
+                 - name: password
+                     volueForm:
+                       Secrete:
+                         - name: Secrete
+                           key: password
+
+               volumeMouts:
+                 mountPath: /odate
+                 name: confing
+                 mountpath: 
+                   name: secrete
+                   path: /data/monog
+        volumes:
+          volueForm:
+            configMap:
+             - items:
+                 
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo
+immutable: true
+data:
+  - username: root
+    password: bhaskar        
+
+apiVersion: v1
+kind: Secrete
+metadata:
+  name: mongo
+immutable: flase
+type: Opaque
+data:
+  - password bhaskar
+
+apiVersion: autoscaling/v1
+kind: HorizatoalPodScaling
+metadata:
+  name: nginx-deployment
+spec:
+  maxreplicas: 2
+  minreplicas: 4
+    matrics:
+      resources:
+        - name: cpu
+          target:
+            type: Ultilaztion
+            avergeUltilxati
+      type: Resource
+       
+
+apiVersion: v1
+kind: HorizantalPodScaling
+metadata:
+  name: nginx-deployment
+spec:
+  minReplicas: 2
+  maxReplicas: 5
+     matrics:
+       resources:
+         - name: cpu
+     type: Resources
+       averageUltization: 50
+       type: Ulizations
+  Sclaing
+      
+
+
+
+apiVersion: autoscaling/v1
+kind: HorizontalPodScale
+metadata:
+  name: nginx
+spec:
+  minReplicas: 2
+  maxReplicas: 4
+  matrics:
+    resources:
+      - name: cpu
+        type:
+        averageUtilization: 50
+        type: Utilization
+    type: Resource
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+
+apiVersion: I
+kind: Ingress
+metadata:
+  name: nignx-ingress
+spec:
+  rules:
+    host: nginx-demoin
+    https:
+      paths: 
+        - path: .(*/)
+          pathType: prefix
+          backend:
+            service:
+              name: 
+              portnumebr: 80
+          
+    host: nginx-ui
+    https:
+      paths:
+        path: .*/
+        pathType: Prex
+        servicename:
+          portnumber:
+
+apiVersion: apps/v1
+kind: DaemoSet
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  selector: 
+    metchLabels:
+      name: nginx-deployment
+  template:
+    metadata:
+      labels:
+        name: nginx-deployment
+    spec:
+      volumes:
+        - name: procfs
+          hostPath: /mnt/data
+      voluemMounts:
+        name: procfs
+        data: /host/procfs
+        name: sysfs
+        data: /host/sysfs
+
+
+apiVersion: networking.k8s/v1
+kind: Ingress
+metadata:
+  name: ingress-nignx
+spec:
+  rules:
+    host: nginx-dmoni
+    http: 
+      paths: 
+        path: /
+        pathType: Prefix
+        backend:
+        servicename: 
+          portnUMber: 8080
+
+
+kubectl create -f ingress.yaml
+kubectl get ingress
+kubectl describe deployment nginx
+kubectl get pod -0 wide
+kuectl get pod -o yaml
+this user yaml formart this used for bhaskar
+this is used for bhaskasr
+
+annatations
+nodeaffinity:
+requireDuringIgonredDuringExection:
+nodeSelectorTerms:
+weight: 80
+matchExpression:
+   - key: kuberntes
+     opening: In
+     volues:  minikube
+
+podAffinity:
+requiredDuringIgnoredDuringExectuion:
+ selectorTerms:
+Weight:
+matchEpression:
+  - key: 
+    oop
+    volues: minikube
+liveProbe:
+  exec:
+    command:
+    - mongo
+    -- eval
+    - db.admincommand
+  initialDealySecond: 1
+  PeriodeSecond: 10
+  timeout secound:
+  failurethreshold: 0
+  secussesThreshold: 1
+
+    \ 
+
+
+
+
+
+
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-db
+spec:
+  capacity:
+    storage: 5Gi
+  StorageClassname: deafult
+  accessesMode: 
+    - ReadOnlyOnce
+  hostPath:
+    - name: my-volume
+      path: /data
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-db
+spec:
+  StorageClassname: defalult
+  accessModes:
+    - ReadOnlyOnce
+  resoures:
+    requests:
+      storage: 4Gi
+
+apiVerion: v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  Servicename: minikube
+  template:
+    metadata:
+      labels:
+        name: nginx-deployment
+    spec:
+      voluems:
+        name: myvolues
+        hostpath:
+          path: /data/data
+      containers:
+        - name: nginx-deployment
+          im age: nginx
+          volueMount:
+            name: myvolue
+            mountPaht: /data
+            
+
+  
